@@ -1,8 +1,8 @@
-const express = require();
+const express = require('express');
 
 const index = express()
-const port = process.env.PORT || 300
+const PORT = process.env.PORT || 3000
 
-index.listen(port, () => {
-    console.log('server started on ' + port)
+index.listen(PORT, () => {
+    console.log('server started on port ' + PORT)
 })
