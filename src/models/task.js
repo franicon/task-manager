@@ -12,3 +12,5 @@ const Task = mongoose.model('Task', new Schema({
         required: false
     }
 }));
+
+module.exports = Task;
