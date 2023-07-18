@@ -16,7 +16,7 @@ app.post('/users', async (req, res) => {
     try {
         await user.save()
         res.status(201).send(user)
-    } catch (e){
+    } catch (e) {
         res.status(400).send(e)
     }
 });
@@ -30,48 +30,51 @@ app.get('/users', async (req, res) => {
     }
 })
 
-app.get('/users/:id', (req, res) => {
-    const _id = req.params.id;
-
-    User.findById(_id).then((user) => {
+app.get('/users/:id', async (req, res) => {
+    const _id = req.params.id
+    try {
+        const user = await User.findById(_id)
         if (!user) {
-            return res.status(404).send(_id)
+            return res.status(404).send('User not found')
         }
-        res.status(200).send(user)
-    }).catch((err) => {
-        res.status(404).send(err)
-    })
+        res.status(200).send(200)
+    } catch (e) {
+        res.status(500).send()
+    }
 })
 
 // Task
-app.post('/tasks', (req, res) => {
+app.post('/tasks', async (req, res) => {
     const task = new Task(req.body)
-    task.save().then(() => {
-        res.status(200).send(task)
-    }).catch((err) => {
-        res.status(400).send(err)
-    })
+    try {
+        await task.save()
+        res.status(201).send(task)
+    } catch (e) {
+        res.status(500).send()
+    }
 })
 
-app.get('/tasks', (req, res) => {
-    Task.find({}).then((users) => {
-        res.status(200).send(users)
-    }).catch((err) => {
-        res.status(500)
-    })
+app.get('/tasks', async (req, res) => {
+   try {
+       const tasks = await Task.find({});
+       res.status(200).send(tasks);
+   } catch (e) {
+       res.status(500).send();
+   }
 })
 
-app.get('/tasks/:id', (req, res) => {
+app.get('/tasks/:id', async(req, res) => {
     const _id = req.params.id
 
-    Task.findById(_id).then((task) => {
+    try {
+        const task = await Task.findById(_id)
         if (!task) {
-            return res.status(404)
+            return res.status(404).send('No task found with the given ID')
         }
         res.status(200).send(task)
-    }).catch((err) => {
-        res.status(500).send(err)
-    })
+    } catch (e) {
+        res.status(500).send()
+    }
 })
 
 
