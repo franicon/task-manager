@@ -11,7 +11,7 @@ app.use(express.json());
 
 // User
 app.post('/users', async (req, res) => {
-    const user = new User(req.body);
+    const user = new User(req.body)
 
     try {
         await user.save()
@@ -19,7 +19,7 @@ app.post('/users', async (req, res) => {
     } catch (e) {
         res.status(400).send(e)
     }
-});
+})
 
 app.get('/users', async (req, res) => {
     try {
@@ -37,7 +37,7 @@ app.get('/users/:id', async (req, res) => {
         if (!user) {
             return res.status(404).send('User not found')
         }
-        res.status(200).send(200)
+        res.status(200).send(user)
     } catch (e) {
         res.status(500).send()
     }
@@ -77,6 +77,17 @@ app.get('/tasks/:id', async(req, res) => {
     }
 })
 
+app.patch('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        if (!user) {
+            return res.status(404).send('User not found')
+        }
+        res.status(200).send(user)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
 
 app.listen(PORT, () => {
     console.log('server started on port ' + PORT)
