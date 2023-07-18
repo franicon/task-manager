@@ -10,21 +10,24 @@ const PORT = process.env.PORT || 3000
 app.use(express.json());
 
 // User
-app.post('/users', (req, res) => {
-    const user = new User(req.body)
-    user.save().then(() => {
-        res.status(200).send(user)
-    }).catch((err) => {
-        res.status(400).send(err)
-    })
+app.post('/users', async (req, res) => {
+    const user = new User(req.body);
+
+    try {
+        await user.save()
+        res.status(201).send(user)
+    } catch (e){
+        res.status(400).send(e)
+    }
 });
 
-app.get('/users', (req, res) => {
-    User.find({}).then((users) => {
-        res.status(200).send(users)
-    }).catch((err) => {
-        res.status(500).send(err)
-    })
+app.get('/users', async (req, res) => {
+    try {
+        const users = User.find({})
+        res.send(users)
+    } catch (e) {
+        res.status(500).send()
+    }
 })
 
 app.get('/users/:id', (req, res) => {
