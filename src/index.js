@@ -23,7 +23,7 @@ app.post('/users', async (req, res) => {
 
 app.get('/users', async (req, res) => {
     try {
-        const users = User.find({})
+        const users = await User.find({})
         res.send(users)
     } catch (e) {
         res.status(500).send()
@@ -59,6 +59,18 @@ app.patch('/users/:id', async (req, res) => {
         }
         res.status(200).send(user)
     } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id)
+        if (!user) {
+            return res.status(404).send({error: 'user not found'})
+        }
+        res.status(200).send({msg: 'Deleted successfully'})
+    }catch (e) {
         res.status(400).send(e)
     }
 })
