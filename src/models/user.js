@@ -1,43 +1,55 @@
 const validator = require('validator');
 const { Schema, mongoose } = require('mongoose');
 
-const User = mongoose.model('User', new Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    password: {
-        type: String,
-        minLength: 7,
-        trim: true,
-        validate(value) {
-            if (value.includes('password')) {
-                throw new Error('you can not use the word password')
+const userSchema = new Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        password: {
+            type: String,
+            minLength: 7,
+            trim: true,
+            validate(value) {
+                if (value.includes('password')) {
+                    throw new Error('you can not use the word password')
+                }
             }
-        }
-    },
-    email: {
-        type: String,
-        required: true,
-        trim: true,
-        lowercase: true,
-        validate(value) {
-            if (!validator.isEmail(value)) {
-                throw new Error('Email is invalid')
+        },
+        email: {
+            type: String,
+            required: true,
+            trim: true,
+            lowercase: true,
+            validate(value) {
+                if (!validator.isEmail(value)) {
+                    throw new Error('Email is invalid')
+                }
             }
-        }
-    },
-    age: {
-        type: Number,
-        default: 0,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('age must be a positive number')
+        },
+        age: {
+            type: Number,
+            default: 0,
+            validate(value) {
+                if (value < 0) {
+                    throw new Error('age must be a positive number')
+                }
             }
         }
     }
-}))
+)
+
+userSchema.pre('save', async function (next) {
+    const user = this
+
+
+
+    next()
+})
+
+const User = mongoose.model('User', userSchema);
 
 
 module.exports = User;
