@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-//
+
 userSchema.statics.findByCredentials = async function (email, password) {
     const user = await User.findOne({email})
 
@@ -65,6 +65,16 @@ userSchema.statics.findByCredentials = async function (email, password) {
     }
 
     return user
+}
+
+userSchema.methods.toJSON = function () {
+    const user = this
+    const userObject = user.toObject()
+
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
 }
 
 userSchema.methods.generateAuthToken = async function () {
