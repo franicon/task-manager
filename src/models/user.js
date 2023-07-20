@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const { mongoose } = require('mongoose');
 
-const userSchema = new mongoose.Schema(
-    {
+const userSchema = new mongoose.Schema({
         name: {
             type: String,
             required: true,
@@ -49,6 +48,12 @@ const userSchema = new mongoose.Schema(
         }]
     }
 );
+
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
 
 userSchema.statics.findByCredentials = async function (email, password) {
     const user = await User.findOne({email})
