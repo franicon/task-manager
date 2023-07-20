@@ -67,7 +67,7 @@ router.get('/users/:id', async (req, res) => {
     }
 })
 
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'email', 'password', 'age']
     const isValid = updates.every((item) => allowedUpdates.includes(item))
@@ -77,16 +77,10 @@ router.patch('/users/:id', async (req, res) => {
     }
 
     try {
-        const user = await User.findById(req.params.id)
+        updates.forEach((update) => req.user[update] = req.body[update]);
+        await req.user.save()
+        res.send(req.user)
 
-        updates.forEach((update) => user[update] = req.body[update]);
-
-        await user.save()
-
-        if (!user) {
-            return res.status(404).send('User not found')
-        }
-        res.status(200).send(user)
     } catch (e) {
         res.status(400).send(e)
     }
