@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const { mongoose } = require('mongoose');
 
@@ -39,10 +40,17 @@ const userSchema = new mongoose.Schema(
                     throw new Error('age must be a positive number')
                 }
             }
-        }
+        },
+        tokens: [{
+            token: {
+                type: String,
+                required: true
+            }
+        }]
     }
 );
 
+//
 userSchema.statics.findByCredentials = async function (email, password) {
     const user = await User.findOne({email})
 
@@ -57,6 +65,16 @@ userSchema.statics.findByCredentials = async function (email, password) {
     }
 
     return user
+}
+
+userSchema.methods.generateAuthToken = async function () {
+    const user = this
+    const token = jwt.sign({_id: user._id.toString()}, 'secret')
+
+    user.tokens = user.tokens.concat({token})
+    await user.save()
+
+    return token
 }
 
 // Hash Password
