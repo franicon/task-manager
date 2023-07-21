@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
-const { mongoose } = require('mongoose');
+const {mongoose} = require('mongoose');
 
 const Task = require('./task')
 
@@ -107,7 +107,7 @@ userSchema.pre('save', async function (next) {
 })
 
 // Delete User Tasks when user account is removed
-userSchema.pre('deleteOne', async function(next) {
+userSchema.pre('deleteOne', async function (next) {
     console.log('hello')
     const user = this
     await Task.deleteMany({owner: user._id})
