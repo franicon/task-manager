@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const { mongoose } = require('mongoose');
 
-// const Task = require('./task')
+const Task = require('./task')
 
 const userSchema = new mongoose.Schema({
         name: {
@@ -108,7 +108,7 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('deleteOne', async function(next) {
     console.log('hello')
     const user = this
-    await task.deleteMany({owner: user._id})
+    await Task.deleteMany({owner: user._id})
     next()
 })
 
